@@ -20,11 +20,11 @@
                          (swap! paused #(not %))
                          (swap! button-icon #(if @paused :play :pause))))
     {:paused paused
-    :button-icon button-icon
+     :button-icon button-icon
      :current-button-icon (atom @button-icon)
-    :play-pause-button play-pause-button
-    :grid-size 72
-    :cells (for [col (range 30 40)] (list 36 col))}))
+     :play-pause-button play-pause-button
+     :grid-size 72
+     :cells (for [col (range 30 40)] (list 36 col))}))
 
 (defn get-neighbors [[r c] grid-size]
   (filter #(not (= % [r c]))
@@ -79,10 +79,10 @@
     (if @paused
       state
       (assoc state :cells (process-cells cells
-                                        grid-size
-                                        []
-                                        cells
-                                        cells)))))
+                                         grid-size
+                                         []
+                                         cells
+                                         cells)))))
 
 (defn update-state [state]
   (-> state
