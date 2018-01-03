@@ -18,9 +18,10 @@
                          (.preventDefault e)
                          (.stopPropagation e)
                          (swap! paused #(not %))
-                         (swap! button-icon #(if @paused :pause :play))))
+                         (swap! button-icon #(if @paused :play :pause))))
     {:paused paused
     :button-icon button-icon
+     :current-button-icon (atom @button-icon)
     :play-pause-button play-pause-button
     :grid-size 72
     :cells (for [col (range 30 40)] (list 36 col))}))
@@ -100,19 +101,21 @@
       (q/fill 0)
       (q/rect (* col cell-width) (* row cell-height) cell-width cell-height))))
 
-(defn render-button [button paused icon]
+(defn render-button [button current-icon icon]
   (cond
-    (and @paused (= @icon :pause)) (set! (.-innerHTML button) svgs/play)
-    (and (not @paused) (= @icon :play)) (set! (.-innerHTML button) svgs/pause)))
+    (and (not (= @current-icon :pause)) (= @icon :pause)) (do (reset! current-icon :pause)
+                                                              (set! (.-innerHTML button) svgs/pause))
+    (and (not (= @current-icon :play)) (= @icon :play)) (do (reset! current-icon :play)
+                                                            (set! (.-innerHTML button) svgs/play))))
 
 (defn draw-state [state]
   (q/background 360 0 100)
-  (let [{:keys [grid-size cells play-pause-button paused button-icon]} state
+  (let [{:keys [grid-size cells play-pause-button button-icon current-button-icon]} state
         cell-width (/ (q/width) grid-size)
         cell-height (/ (q/height) grid-size)]
     (draw-grid cell-width cell-height)
     (draw-cells cells cell-width cell-height grid-size)
-    (render-button play-pause-button paused button-icon)))
+    (render-button play-pause-button current-button-icon button-icon)))
 
 (q/defsketch game-of-life-quil
   :host "game-of-life-quil"
