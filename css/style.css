@@ -12,3 +12,16 @@ body {
 #game-of-life-quil {
     box-shadow: 3px 3px 5px 6px #ccc;
 }
+
+.controls button {
+    width: 120px;
+    height: 120px;
+    padding: 0;
+    border: none;
+    background-color: inherit;
+}
+
+.controls button svg {
+    width: 100px;
+    height: 120px;
+}

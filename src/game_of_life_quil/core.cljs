@@ -1,14 +1,18 @@
 (ns game-of-life-quil.core
   (:require [quil.core :as q :include-macros true]
             [quil.middleware :as m]
-            [clojure.core.match :refer [match]]))
+            [clojure.core.match :refer [match]]
+            [game-of-life-quil.svgs :as svgs]))
 
 (enable-console-print!)
 
 (defn setup []
   (q/frame-rate 5)
   (q/color-mode :hsb 360 100 100)
-  {:grid-size 72
+  {:paused (atom false)
+   :button-icon (atom :pause)
+   :play-pause-button (.getElementById js/document "play-pause-button")
+   :grid-size 72
    :cells (for [col (range 30 40)] (list 36 col))})
 
 (defn get-neighbors [[r c] grid-size]
@@ -60,15 +64,30 @@
                [populated neighbors] (println (str "Unhandled case" populated neighbors)))))))
 
 (defn game-of-life [state]
-  (let [{:keys [cells grid-size]} state]
-    (assoc state :cells (process-cells cells
-                                       grid-size
-                                       []
-                                       cells
-                                       cells))))
+  (let [{:keys [cells grid-size paused]} state]
+    (if @paused
+      state
+      (assoc state :cells (process-cells cells
+                                        grid-size
+                                        []
+                                        cells
+                                        cells)))))
+
+;; TODO why is the click event firing multiple times per click?
+(defn handle-events [state]
+  (let [{:keys [play-pause-button paused button-icon]} state]
+    (.addEventListener play-pause-button
+                       "click"
+                       (fn [e]
+                         (.preventDefault e)
+                         (.stopPropagation e)
+                         (swap! paused #(not %))
+                         (swap! button-icon #(if @paused :pause :play))))
+    state))
 
 (defn update-state [state]
   (-> state
+      (handle-events)
       (game-of-life)))
 
 (defn draw-grid [cell-width cell-height]
@@ -84,13 +103,19 @@
       (q/fill 0)
       (q/rect (* col cell-width) (* row cell-height) cell-width cell-height))))
 
+(defn render-button [button paused icon]
+  (cond
+    (and @paused (= @icon :pause)) (set! (.-innerHTML button) svgs/play)
+    (and (not @paused) (= @icon :play)) (set! (.-innerHTML button) svgs/pause)))
+
 (defn draw-state [state]
   (q/background 360 0 100)
-  (let [{:keys [grid-size cells]} state
+  (let [{:keys [grid-size cells play-pause-button paused button-icon]} state
         cell-width (/ (q/width) grid-size)
         cell-height (/ (q/height) grid-size)]
     (draw-grid cell-width cell-height)
-    (draw-cells cells cell-width cell-height grid-size)))
+    (draw-cells cells cell-width cell-height grid-size)
+    (render-button play-pause-button paused button-icon)))
 
 (q/defsketch game-of-life-quil
   :host "game-of-life-quil"
