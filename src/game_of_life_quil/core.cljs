@@ -9,11 +9,21 @@
 (defn setup []
   (q/frame-rate 5)
   (q/color-mode :hsb 360 100 100)
-  {:paused (atom false)
-   :button-icon (atom :pause)
-   :play-pause-button (.getElementById js/document "play-pause-button")
-   :grid-size 72
-   :cells (for [col (range 30 40)] (list 36 col))})
+  (let [play-pause-button (.getElementById js/document "play-pause-button")
+        paused (atom false)
+        button-icon (atom :pause)]
+    (.addEventListener play-pause-button
+                       "click"
+                       (fn [e]
+                         (.preventDefault e)
+                         (.stopPropagation e)
+                         (swap! paused #(not %))
+                         (swap! button-icon #(if @paused :pause :play))))
+    {:paused paused
+    :button-icon button-icon
+    :play-pause-button play-pause-button
+    :grid-size 72
+    :cells (for [col (range 30 40)] (list 36 col))}))
 
 (defn get-neighbors [[r c] grid-size]
   (filter #(not (= % [r c]))
@@ -73,21 +83,8 @@
                                         cells
                                         cells)))))
 
-;; TODO why is the click event firing multiple times per click?
-(defn handle-events [state]
-  (let [{:keys [play-pause-button paused button-icon]} state]
-    (.addEventListener play-pause-button
-                       "click"
-                       (fn [e]
-                         (.preventDefault e)
-                         (.stopPropagation e)
-                         (swap! paused #(not %))
-                         (swap! button-icon #(if @paused :pause :play))))
-    state))
-
 (defn update-state [state]
   (-> state
-      (handle-events)
       (game-of-life)))
 
 (defn draw-grid [cell-width cell-height]
