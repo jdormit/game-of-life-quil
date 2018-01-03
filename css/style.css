@@ -13,6 +13,12 @@ body {
     box-shadow: 3px 3px 5px 6px #ccc;
 }
 
+.controls {
+    position: absolute;
+    top: 1.5em;
+    left: 1.5em;
+}
+
 .controls button {
     width: 120px;
     height: 120px;
@@ -22,6 +28,5 @@ body {
 }
 
 .controls button svg {
-    width: 100px;
-    height: 120px;
+    width: 75px;
 }
