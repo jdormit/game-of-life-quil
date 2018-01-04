@@ -14,14 +14,19 @@ body {
 }
 
 .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     top: 1.5em;
     left: 1.5em;
 }
 
 .controls button {
-    width: 120px;
-    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 75px;
     padding: 0;
     border: none;
     background-color: inherit;
