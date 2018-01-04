@@ -13,8 +13,16 @@
   (q/frame-rate 60)
   (q/color-mode :hsb 360 100 100)
   (let [play-pause-button (.getElementById js/document "play-pause-button")
+        playback-slider (.getElementById js/document "playback-slider")
         paused (atom false)
-        button-icon (atom :pause)]
+        button-icon (atom :pause)
+        playback-rate (atom 5)]
+    (set! (.-value playback-slider) @playback-rate)
+    (.addEventListener playback-slider
+                       "input"
+                       (fn [e]
+                         (let [value (.-value playback-slider)]
+                           (reset! playback-rate value))))
     (.addEventListener play-pause-button
                        "click"
                        (fn [e]
@@ -23,7 +31,7 @@
                          (swap! paused #(not %))
                          (swap! button-icon #(if @paused :play :pause))))
     {:paused paused
-     :playback-rate 5
+     :playback-rate playback-rate
      :button-icon button-icon
      :current-button-icon (atom @button-icon)
      :play-pause-button play-pause-button
@@ -82,7 +90,7 @@
 
 (defn game-of-life [state]
   (let [{:keys [cells grid-size paused delta-time playback-rate]} state]
-    (if (or @paused (< delta-time (/ 1000 playback-rate)))
+    (if (or @paused (< delta-time (/ 1000 @playback-rate)))
       state
       (-> state
           (assoc :cells (process-cells cells

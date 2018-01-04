@@ -35,3 +35,7 @@ body {
 .controls button svg {
     width: 75px;
 }
+
+.controls input {
+    margin-left: 1.5em;
+}
