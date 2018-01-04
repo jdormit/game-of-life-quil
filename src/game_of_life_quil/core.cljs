@@ -6,8 +6,11 @@
 
 (enable-console-print!)
 
+(defn now []
+  (.getTime (js/Date.)))
+
 (defn setup []
-  (q/frame-rate 5)
+  (q/frame-rate 60)
   (q/color-mode :hsb 360 100 100)
   (let [play-pause-button (.getElementById js/document "play-pause-button")
         paused (atom false)
@@ -20,11 +23,14 @@
                          (swap! paused #(not %))
                          (swap! button-icon #(if @paused :play :pause))))
     {:paused paused
+     :playback-rate 5
      :button-icon button-icon
      :current-button-icon (atom @button-icon)
      :play-pause-button play-pause-button
      :grid-size 72
-     :cells (for [col (range 30 40)] (list 36 col))}))
+     :cells (for [col (range 30 40)] (list 36 col))
+     :last-time (now)
+     :delta-time 0}))
 
 (defn get-neighbors [[r c] grid-size]
   (filter #(not (= % [r c]))
@@ -75,17 +81,25 @@
                [populated neighbors] (println (str "Unhandled case" populated neighbors)))))))
 
 (defn game-of-life [state]
-  (let [{:keys [cells grid-size paused]} state]
-    (if @paused
+  (let [{:keys [cells grid-size paused delta-time playback-rate]} state]
+    (if (or @paused (< delta-time (/ 1000 playback-rate)))
       state
-      (assoc state :cells (process-cells cells
-                                         grid-size
-                                         []
-                                         cells
-                                         cells)))))
+      (-> state
+          (assoc :cells (process-cells cells
+                                       grid-size
+                                       []
+                                       cells
+                                       cells))
+          (assoc :last-time (now))))))
+
+(defn calculate-delta-time [state]
+  (let [{:keys [last-time]} state
+        current-time (now)]
+    (assoc state :delta-time (- current-time last-time))))
 
 (defn update-state [state]
   (-> state
+      (calculate-delta-time)
       (game-of-life)))
 
 (defn draw-grid [cell-width cell-height]
