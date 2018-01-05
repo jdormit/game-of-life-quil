@@ -14,9 +14,9 @@ For more information on the Game of Life, check out the [Wikipedia article](http
 
 ## Usage
 
-Run `lein compile` command and open `index.html` in your browser.
+Run `lein compile` and open `index.html` in your browser.
 
-For interactive development run `lein cljsbuild auto` command. This command will be recompiling cljs to js each time you modify `core.cljs` and you can see result immediately by refreshing page.
+For interactive development run `lein cljsbuild auto`. This command will recompile cljs to js each time you modify `core.cljs` and you can see result immediately by refreshing the page.
 
 The game starts in a paused state with no cells. Click on a cell to populate it. Click on a populated cell to depopulate it. When you have configured the game you way you want, press the play button and see what happens! The slider controls game speed.
 
