@@ -15,6 +15,9 @@
   (let [play-pause-button (.getElementById js/document "play-pause-button")
         playback-slider (.getElementById js/document "playback-slider")
         reset-button (.getElementById js/document "reset-button")
+        help-button (.getElementById js/document "help-button")
+        help-overlay (.getElementById js/document "help-overlay")
+        close-help-overlay (.getElementById js/document "close-help-overlay")
         should-reset (atom false)
         paused (atom true)
         button-icon (atom :play)
@@ -42,6 +45,18 @@
                          (.preventDefault e)
                          (.stopPropagation e)
                          (reset! should-reset true)))
+    (.addEventListener help-button
+                       "click"
+                       (fn [e]
+                         (.preventDefault e)
+                         (.stopPropagation e)
+                         (set! (.-display (.-style help-overlay)) "block")))
+    (.addEventListener close-help-overlay
+                       "click"
+                       (fn [e]
+                         (.preventDefault e)
+                         (.stopPropagation e)
+                         (set! (.-display (.-style help-overlay)) "none")))
     {:paused paused
      :playback-rate playback-rate
      :button-icon button-icon

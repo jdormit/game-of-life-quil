@@ -1,6 +1,8 @@
 html, body {
     height: 100%;
     margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #444;
 }
 
 body {
@@ -9,8 +11,8 @@ body {
     justify-content: center;
 }
 
-#game-of-life-quil {
-    box-shadow: 3px 3px 5px 6px #ccc;
+button, a, input[type="range"]:hover {
+    cursor: pointer;
 }
 
 .controls {
@@ -67,6 +69,30 @@ body {
     margin-right: 20px;
 }
 
-button, a, input[type="range"]:hover {
-    cursor: pointer;
+#game-of-life-quil {
+    box-shadow: 3px 3px 5px 6px #ccc;
+}
+
+#help-overlay {
+    display: none;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 15px;
+    padding-top: 20px;
+    position: absolute;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 650px;
+}
+
+#close-help-overlay {
+    background-color: transparent;
+    width: 30px;
+    position: absolute;
+    top: 3px;
+    right: 3px;
 }
