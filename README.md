@@ -18,7 +18,7 @@ Run `lein compile` and open `index.html` in your browser.
 
 For interactive development run `lein cljsbuild auto`. This command will recompile cljs to js each time you modify `core.cljs` and you can see result immediately by refreshing the page.
 
-The game starts in a paused state with no cells. Click on a cell to populate it. Click on a populated cell to depopulate it. When you have configured the game you way you want, press the play button and see what happens! The slider controls game speed.
+The game starts in a paused state with no cells. Left-click on a cell to populate it. Right-click on a populated cell to depopulate it. You can click-and-drag to populate or depopulate multiple cells. When you have configured the game you way you want, press the play button and see what happens! The slider controls game speed.
 
 ## License
 Copyright 2018 Jeremy Dormitzer

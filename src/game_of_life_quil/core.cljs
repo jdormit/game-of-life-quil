@@ -167,9 +167,10 @@
         row (int (/ (q/mouse-y) (/ (q/height) grid-size)))
         col (int (/ (q/mouse-x) (/ (q/width) grid-size)))
         cell (list row col)]
-    (if (cell-is-populated cell cells)
-      (assoc state :cells (remove #{cell} cells))
-      (assoc state :cells (conj cells cell)))))
+    (cond
+      (= :right (q/mouse-button)) (assoc state :cells (remove #{cell} cells))
+      (= :left (q/mouse-button)) (assoc state :cells (conj cells cell))
+      :else state)))
 
 (q/defsketch game-of-life-quil
   :host "game-of-life-quil"
@@ -177,5 +178,6 @@
   :setup setup
   :update update-state
   :draw draw-state
+  :mouse-dragged handle-mouse
   :mouse-pressed handle-mouse
   :middleware [m/fun-mode])
