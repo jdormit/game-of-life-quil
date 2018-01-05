@@ -22,6 +22,32 @@ body {
     left: 1.5em;
 }
 
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 1.5em;
+    right: 1.5em;
+}
+
+.links a,button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background-color: inherit;
+}
+
+.links a {
+    width: 50px;
+}
+
+.links button {
+    width: 80px;
+}
+
 .controls button {
     display: flex;
     justify-content: center;
@@ -39,4 +65,8 @@ body {
 .controls button, input {
     margin: 0;
     margin-right: 20px;
+}
+
+button, a, input[type="range"]:hover {
+    cursor: pointer;
 }
