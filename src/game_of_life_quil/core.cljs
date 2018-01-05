@@ -14,8 +14,8 @@
   (q/color-mode :hsb 360 100 100)
   (let [play-pause-button (.getElementById js/document "play-pause-button")
         playback-slider (.getElementById js/document "playback-slider")
-        paused (atom false)
-        button-icon (atom :pause)
+        paused (atom true)
+        button-icon (atom :play)
         playback-rate (atom 5)]
     (set! (.-value playback-slider) @playback-rate)
     (.addEventListener playback-slider
@@ -23,6 +23,10 @@
                        (fn [e]
                          (let [value (.-value playback-slider)]
                            (reset! playback-rate value))))
+    (set! (.-innerHTML play-pause-button)
+          (cond
+            (= @button-icon :play) svgs/play
+            (= @button-icon :pause) svgs/pause))
     (.addEventListener play-pause-button
                        "click"
                        (fn [e]
@@ -35,8 +39,8 @@
      :button-icon button-icon
      :current-button-icon (atom @button-icon)
      :play-pause-button play-pause-button
-     :grid-size 72
-     :cells (for [col (range 30 40)] (list 36 col))
+     :grid-size 50
+     :cells '()
      :last-time (now)
      :delta-time 0}))
 
