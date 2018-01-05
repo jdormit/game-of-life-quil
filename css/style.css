@@ -36,6 +36,7 @@ body {
     width: 75px;
 }
 
-.controls input {
-    margin-left: 1.5em;
+.controls button, input {
+    margin: 0;
+    margin-right: 20px;
 }
