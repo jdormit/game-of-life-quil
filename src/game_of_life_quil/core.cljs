@@ -14,6 +14,8 @@
   (q/color-mode :hsb 360 100 100)
   (let [play-pause-button (.getElementById js/document "play-pause-button")
         playback-slider (.getElementById js/document "playback-slider")
+        reset-button (.getElementById js/document "reset-button")
+        should-reset (atom false)
         paused (atom true)
         button-icon (atom :play)
         playback-rate (atom 5)]
@@ -34,11 +36,18 @@
                          (.stopPropagation e)
                          (swap! paused #(not %))
                          (swap! button-icon #(if @paused :play :pause))))
+    (.addEventListener reset-button
+                       "click"
+                       (fn [e]
+                         (.preventDefault e)
+                         (.stopPropagation e)
+                         (reset! should-reset true)))
     {:paused paused
      :playback-rate playback-rate
      :button-icon button-icon
      :current-button-icon (atom @button-icon)
      :play-pause-button play-pause-button
+     :should-reset should-reset
      :grid-size 50
      :cells '()
      :last-time (now)
@@ -109,9 +118,19 @@
         current-time (now)]
     (assoc state :delta-time (- current-time last-time))))
 
+(defn handle-reset [state]
+  (let [{:keys [should-reset paused button-icon]} state]
+    (if @should-reset
+      (do (reset! should-reset false)
+          (reset! paused true)
+          (reset! button-icon :play)
+          (assoc state :cells '()))
+      state)))
+
 (defn update-state [state]
   (-> state
       (calculate-delta-time)
+      (handle-reset)
       (game-of-life)))
 
 (defn draw-grid [cell-width cell-height]
